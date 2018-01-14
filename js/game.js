@@ -21,7 +21,7 @@ class Game{
     this.platforms = game.add.group()
     this.platforms.enableBody = true
 
-    this.ground = this.platforms.create(0, game.world.height - 100, 'ground')
+    this.ground = this.platforms.create(0, game.world.height - 90, 'ground')
     this.ground.scale.setTo(0.1, 0.1)
     this.ground.body.immovable = true
 
@@ -36,12 +36,32 @@ class Game{
     this.player.body.collideWorldBounds = true
 
     this.player.animations.add('left', [0,1,2,3], 10, true)
-    this.player.animations.add('right', [4,5,6,7], 10, true)
+    this.player.animations.add('right', [5,6,7,8], 10, true)
+    this.player.idle = ()=>{
+      this.player.animations.stop()
+      this.player.frame = 4
+    }
+
+    this.arrows = game.input.keyboard.createCursorKeys()
   }
 
   update(){
     const game = this.game
     let hitPlatform = game.physics.arcade.collide(this.player, this.platforms)
+
+    this.player.body.velocity.x = 0
+
+    if(this.arrows.left.isDown){
+      this.player.body.velocity.x = -150
+      this.player.animations.play('left')
+    }
+    else if(this.arrows.right.isDown){
+      this.player.body.velocity.x = 150
+      this.player.animations.play('right')
+    }
+    else{
+      this.player.idle()
+    }
   }
 
   addLedge(x, y, scale = [0.05, 0.05]){
