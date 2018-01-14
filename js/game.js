@@ -47,20 +47,25 @@ class Game{
 
   update(){
     const game = this.game
-    let hitPlatform = game.physics.arcade.collide(this.player, this.platforms)
+    const player = this.player
+    let hitPlatform = game.physics.arcade.collide(player, this.platforms)
 
-    this.player.body.velocity.x = 0
+    player.body.velocity.x = 0
 
     if(this.arrows.left.isDown){
-      this.player.body.velocity.x = -150
-      this.player.animations.play('left')
+      player.body.velocity.x = -150
+      player.animations.play('left')
     }
     else if(this.arrows.right.isDown){
-      this.player.body.velocity.x = 150
-      this.player.animations.play('right')
+      player.body.velocity.x = 150
+      player.animations.play('right')
     }
     else{
-      this.player.idle()
+      player.idle()
+    }
+
+    if(this.arrows.up.isDown && player.body.touching.down && hitPlatform){
+      player.body.velocity.y = -300
     }
   }
 
