@@ -18,6 +18,8 @@ class Game{
 
   create(){
     const game = this.game
+    this.score = 0
+
     game.add.sprite(-100, 0, 'background').scale.setTo(0.6, 0.6)
 
     game.physics.startSystem(Phaser.Physics.ARCADE)
@@ -33,19 +35,32 @@ class Game{
     this.addLedge(-150, 250)
 
     this.player = game.add.sprite(32, game.world.height - 150, 'character')
-    game.physics.arcade.enable(this.player)
-    this.player.body.bounce.y = 0.2
-    this.player.body.gravity.y = 300
-    this.player.body.collideWorldBounds = true
+    const player = this.player
 
-    this.player.animations.add('left', [0,1,2,3], 10, true)
-    this.player.animations.add('right', [5,6,7,8], 10, true)
-    this.player.idle = ()=>{
-      this.player.animations.stop()
-      this.player.frame = 4
+    game.physics.arcade.enable(player)
+    player.body.bounce.y = 0.2
+    player.body.gravity.y = 300
+    player.body.collideWorldBounds = true
+
+    player.animations.add('left', [0,1,2,3], 10, true)
+    player.animations.add('right', [5,6,7,8], 10, true)
+    player.idle = ()=>{
+      player.animations.stop()
+      player.frame = 4
+    }
+
+    this.stars = game.add.group()
+    this.stars.enableBody = true
+
+    for(var x = 0; x < 12; x++){
+      let star = this.addStar(x*70 + Math.random() * 10, 0)
+      star.body.gravity.y = 300
+      star.body.bounce.y = Math.random() * 0.5
     }
 
     this.arrows = game.input.keyboard.createCursorKeys()
+
+    this.scoreText = game.add.text(16, 16, `Score: ${this.score}`, {fontSize: '32px', fill: '#000'})
   }
 
   update(){
@@ -53,23 +68,31 @@ class Game{
     const player = this.player
     let hitPlatform = game.physics.arcade.collide(player, this.platforms)
 
-    player.body.velocity.x = 0
+    player.body.velocity.x = player.body.velocity.x / 2
 
     if(this.arrows.left.isDown){
       player.body.velocity.x = -150
-      player.animations.play('left')
     }
     else if(this.arrows.right.isDown){
       player.body.velocity.x = 150
-      player.animations.play('right')
     }
-    else{
+
+    if(player.body.velocity.x > 10){
+      player.animations.play('right')
+    }else if(player.body.velocity.x < -10){
+      player.animations.play('left')
+    }else{
       player.idle()
     }
 
     if(this.arrows.up.isDown && player.body.touching.down && hitPlatform){
       player.body.velocity.y = -300
     }
+
+    game.physics.arcade.collide(this.stars, this.platforms)
+    game.physics.arcade.overlap(this.stars, player, this.collectStar, null, this)
+
+    this.scoreText.text = `Score: ${this.score}`
   }
 
   addLedge(x, y, scale = [0.05, 0.05]){
@@ -77,5 +100,16 @@ class Game{
     ledge.scale.setTo(scale[0], scale[1])
     ledge.body.immovable = true
     return ledge
+  }
+
+  addStar(x, y, scale = [1, 1]){
+    let star = this.stars.create(x, y, 'star')
+    star.scale.setTo(scale[0], scale[1])
+    return star
+  }
+
+  collectStar(player, star){
+    star.kill()
+    this.score += 10
   }
 }
