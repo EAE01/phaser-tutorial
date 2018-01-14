@@ -1,6 +1,3 @@
-window.addEventListener('load', ()=>{
-  const game = new Game()
-})
 class Game{
   constructor(){
     console.log('Initialising game')

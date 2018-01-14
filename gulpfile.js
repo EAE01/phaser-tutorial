@@ -8,7 +8,7 @@ var scssDirectory = ['css/**/*.scss', '!css/compiled/**/*'];
 gulp.task('styles', stylesTask);
 gulp.task('scripts', scriptsTask);
 gulp.task('watch', watchTask);
-gulp.task('default', ['styles'], defaultTask);
+gulp.task('default', ['styles', 'scripts'], defaultTask);
 
 function defaultTask(done) {
   done();

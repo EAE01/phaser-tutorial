@@ -1,4 +1,23 @@
 body {
-  color: red;
-  background-color: purple;
-  margin-right: 0px; }
+  width: 100vw;
+  height: 100vh;
+  margin: 0 !important;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: purple;
+  background: linear-gradient(purple, #ffff1f);
+  background-size: 100vw 100vh; }
+  body > div#container {
+    width: 60%;
+    min-width: 800px;
+    min-height: calc(100vh - 20px);
+    background-color: rgba(255, 255, 255, 0.4);
+    text-align: center;
+    border: none;
+    border-left: 1px solid rgba(255, 255, 255, 0.6);
+    border-right: 1px solid rgba(255, 255, 255, 0.6);
+    margin: 0 auto;
+    padding: 10px; }
+    body > div#container #game {
+      margin: 0 auto;
+      display: inline-block; }
